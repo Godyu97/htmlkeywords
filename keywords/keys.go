@@ -46,7 +46,7 @@ func regKey(content string, key string) (after string, found bool) {
 }
 
 func extractKey(content, key string) string {
-	// todo 实现字符串匹配截取关键内容 关键字可能有空格 正则取index
+	//  实现字符串匹配截取关键内容 关键字可能有空格 正则取index
 	after, found := regKey(content, key)
 	//contain key
 	if found == true {
