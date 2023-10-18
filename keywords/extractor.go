@@ -14,9 +14,10 @@ type Extractor interface {
 }
 
 type extract struct {
-	Subject string            //关键字主题
+	Subject string   //关键字主题
+	ArrKeys []string //关键字列表
+
 	Content string            //解构后的文本
-	ArrKeys []string          //关键字列表
 	Result  map[string]string //提取结果
 }
 
@@ -44,6 +45,7 @@ func (e *extract) GetSubject() string {
 }
 
 func (e *extract) Clear() {
+	e.Content = ""
 	e.Result = make(map[string]string)
 }
 
