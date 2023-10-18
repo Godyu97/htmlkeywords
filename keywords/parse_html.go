@@ -20,6 +20,7 @@ var ArrBlock = []string{
 	"p",
 	"br", "b",
 	"div",
+	"ul", "li",
 }
 
 func formatHTML(n *html.Node) string {
