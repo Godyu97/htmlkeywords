@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	ext := keywords.NewExtractor("项目编号", []string{
+	ext := keywords.NewExtractor([]string{
 		"项目编号",
 		"招标项目编号",
 		"采购项目编号",
@@ -42,7 +42,7 @@ func main() {
 	c := ""
 	err := ext.ExtractKeywordsFromHtml(`<div><div><p><span></span><span>相关标段</span><span>收起</span></p><table><tr><td style=\"text-align: center;width: 15%;\">标段（包）名称</td><td style=\"text-align: center;width: 10%;\">标段（包）编号</td></tr></table></div><p><span></span><span>挂牌公告</span></p><div><ul><li>项目名称:</li><li>国家税务总局上海市金山区税务局部分资产（报废办公家具及信息设备一批）</li></ul><ul><li>项目编号:</li><li>GR2023SH1000885</li><li>转让价格(万元):</li><li>0.766</li></ul><ul><li>标的所属行业:</li><li>机械设备</li><li>标的所在地区:</li><li>上海嘉定区</li></ul><ul><li>信息披露起始日期:</li><li>2023-10-18</li><li>信息披露期满日期:</li><li>2023-10-24</li></ul><ul><li>受托机构:</li><li>受托机构名称:上海国际商品拍卖有限公司&nbsp&nbsp&nbsp&nbsp&nbsp受托机构联系人:李强&nbsp&nbsp&nbsp&nbsp&nbsp联系电话:13918874993</li></ul><ul><li>交易机构:</li><li>业务联系人:无&nbsp&nbsp&nbsp&nbsp&nbsp联系电话:无&nbsp&nbsp&nbsp&nbsp&nbsp负责人:高文骏&nbsp&nbsp&nbsp&nbsp&nbsp联系电话:62657272-154</li></ul></div><br/></div><div>原文链接：<a href=\"https://www.shggzy.com/jyxxcqgg/713520?cExt=eyJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2p5eHhjcSIsInBhZ2VObyI6MSwiZXhwIjoxNjk5MjYwNzAxMjI4fQ.J3kzqy1P5teq7Rbn3bJa3gg1blN-tu0ww2wKS6TCaVw&isIndex=\" target=\"_blank\">https://www.shggzy.com/jyxxcqgg/713520?cExt=eyJhbGciOiJIUzI1NiJ9.eyJwYXRoIjoiL2p5eHhjcSIsInBhZ2VObyI6MSwiZXhwIjoxNjk5MjYwNzAxMjI4fQ.J3kzqy1P5teq7Rbn3bJa3gg1blN-tu0ww2wKS6TCaVw&isIndex=</a></div>`)
 	if err == nil {
-		r := ext.GetResult()
+		r := ext.GetResult(true)
 		log.Println("bufBqCQr ext:", r)
 		for _, v := range r {
 			nhan := 0
