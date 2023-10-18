@@ -55,7 +55,10 @@ func (e *extract) GetResult(filter bool) map[string]string {
 	if filter && e.filterFn != nil {
 		fr := make(map[string]string, len(e.result))
 		for k, v := range e.result {
-			fr[k] = e.filterFn(v)
+			frv := e.filterFn(v)
+			if frv != "" {
+				fr[k] = frv
+			}
 		}
 		return fr
 	} else {
