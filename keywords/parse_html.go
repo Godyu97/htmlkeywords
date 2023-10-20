@@ -1,7 +1,7 @@
 package keywords
 
 import (
-	"github.com/Godyu97/vege9/vegeTools"
+	"github.com/Godyu97/vege9/vege"
 	"golang.org/x/net/html"
 	"io"
 	"strings"
@@ -25,7 +25,7 @@ var ArrBlock = []string{
 
 func formatHTML(n *html.Node) string {
 	var result string
-	if n.Type == html.ElementNode && vegeTools.ItemIsInSlice(n.Data, ArrBlock) {
+	if n.Type == html.ElementNode && vege.ItemIsInSlice(n.Data, ArrBlock) {
 		result += "\n"
 	}
 	for c := n.FirstChild; c != nil; c = c.NextSibling {

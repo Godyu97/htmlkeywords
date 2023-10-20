@@ -1,7 +1,7 @@
 package keywords
 
 import (
-	"github.com/Godyu97/vege9/vegeTools"
+	"github.com/Godyu97/vege9/vege"
 	"regexp"
 	"strings"
 	"unicode/utf8"
@@ -92,8 +92,8 @@ func extractKey(content, key string) string {
 				return extractKey(after, key)
 			}
 			//去除不成对的括号
-			s = vegeTools.RemoveInvalidParentheses(s, [2]rune{'(', ')'})
-			s = vegeTools.RemoveInvalidParentheses(s, [2]rune{'（', '）'})
+			s = vege.RemoveInvalidParentheses(s, [2]rune{'(', ')'})
+			s = vege.RemoveInvalidParentheses(s, [2]rune{'（', '）'})
 			//去除末端空格
 			s = strings.TrimSpace(s)
 			return s
