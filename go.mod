@@ -3,7 +3,7 @@ module github.com/Godyu97/htmlkeywords
 go 1.21
 
 require (
-	github.com/Godyu97/vege9 v1.0.20
+	github.com/Godyu97/vege9 v1.1.0
 	golang.org/x/net v0.17.0
 )
 

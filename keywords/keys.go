@@ -83,6 +83,7 @@ func extractKey(content, key string) string {
 			if idx > 0 {
 				s = s[:idx]
 			}
+			s = strings.TrimSpace(s)
 			//内容过长 大概率是垃圾信息 去after 找找有没有有效信息
 			if utf8.RuneCountInString(s) > 60 {
 				return extractKey(after, key)
