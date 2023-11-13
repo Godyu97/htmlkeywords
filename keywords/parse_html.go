@@ -88,7 +88,13 @@ func formatTable(n *html.Node) string {
 		}
 	}
 	if len(t) > 0 {
+		//todo 锯齿状列表优化
 		ltr := len(t[0])
+		for _, item := range t {
+			if len(item) > ltr {
+				ltr = len(item)
+			}
+		}
 		if ltr%2 == 0 {
 			// 横向表格
 			for _, columns := range t {
