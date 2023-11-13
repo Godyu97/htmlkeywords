@@ -45,7 +45,8 @@ func regKey(content string, key string) (after string, found bool) {
 	return "", false
 }
 
-func extractKey(content, key string) string {
+func extractKey(content, key string) []string {
+	result := make([]string, 0)
 	//  实现字符串匹配截取关键内容 关键字可能有空格 正则取index
 	after, found := regKey(content, key)
 	//contain key
@@ -55,7 +56,7 @@ func extractKey(content, key string) string {
 		if len(text) > 0 {
 			// 1. 处理冒号之后的内容 如果key后面直接是文本，说明不是需要的信息 继续向下匹配
 			if text[0] != ZhColon && text[0] != EnColon && text[0] != Enter && text[0] != Space && text[0] != Table && text[0] != ENSP && text[0] != EMSP && text[0] != NBSP {
-				return extractKey(after, key)
+				return append(result, extractKey(after, key)...)
 			}
 			text = text[1:]
 			s := string(text)
@@ -68,14 +69,13 @@ func extractKey(content, key string) string {
 			})
 			if idxText < 0 {
 				//全是空的，无关键内容
-				return ""
+				return result
 			}
 			// 3. 有效内容，截取到终止条件
 			s = s[idxText:]
 			idx := strings.IndexFunc(s, func(r rune) bool {
-				//todo 此处决定切割关键信息条件
-				if r == Enter ||
-					r == Sep1 || r == Sep2 || r == Sep3 || r == Sep4 {
+				// 此处决定切割关键信息条件
+				if r == Enter || r == Sep1 || r == Sep2 || r == Sep3 {
 					return true
 				}
 				return false
@@ -83,23 +83,15 @@ func extractKey(content, key string) string {
 			if idx > 0 {
 				s = s[:idx]
 			}
-			s = strings.TrimSpace(s)
-			//内容过长 大概率是垃圾信息 去after 找找有没有有效信息
-			if utf8.RuneCountInString(s) > 60 {
-				return extractKey(after, key)
-			}
-			//value 包含中文冒号 大概率不是想要的内容
-			if strings.ContainsRune(s, ZhColon) {
-				return extractKey(after, key)
-			}
 			//去除不成对的括号
 			s = vege.RemoveInvalidParentheses(s, [2]rune{'(', ')'})
 			s = vege.RemoveInvalidParentheses(s, [2]rune{'（', '）'})
 			//去除末端空格
 			s = strings.TrimSpace(s)
-			return s
+			result = append(result, s)
+			return append(result, extractKey(after, key)...)
 		}
 	}
 	//no contain
-	return ""
+	return result
 }
