@@ -89,7 +89,7 @@ func formatTable(n *html.Node) string {
 	}
 	if len(t) > 0 {
 		ltr := len(t[0])
-		if ltr == 2 {
+		if ltr%2 == 0 {
 			// 横向表格
 			for _, columns := range t {
 				for i, _ := range columns {
