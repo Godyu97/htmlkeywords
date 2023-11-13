@@ -13,12 +13,13 @@ type Extractor interface {
 	GetSubject() string
 	Clear()
 
-	Filter(item string) string //return filter 后的值
+	Filter(item string) string                      //return filter 后的值
+	GetItemsByWeight() (key string, items []string) //按关键字列表序列获取第一个非空结果集
 }
 
 type extract struct {
 	subject  string                   //关键字主题
-	arrKeys  []string                 //关键字列表
+	arrKeys  []string                 //关键字列表,有序为权重
 	filterFn func(item string) string //GetResult时额外的过滤逻辑
 
 	content string              //解构后的文本
@@ -66,7 +67,7 @@ func WithFilter(fn func(string) string) ExtractorOptionFunc {
 
 func (e *extract) GetResult(filter bool) map[string][]string {
 	if filter && e.filterFn != nil {
-		fr := make(map[string][]string, len(e.result))
+		fr := make(map[string][]string)
 		for k, v := range e.result {
 			frv := make([]string, 0)
 			for _, s := range v {
@@ -122,4 +123,16 @@ func (e *extract) ExtractKeywordsFromHtml(html string) error {
 		}
 	}
 	return nil
+}
+
+func (e *extract) GetItemsByWeight() (key string, items []string) {
+	result := e.GetResult(true)
+	for _, key := range e.arrKeys {
+		items, ok := result[key]
+		if ok == false {
+			continue
+		}
+		return key, items
+	}
+	return "", nil
 }

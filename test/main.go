@@ -8,6 +8,8 @@ import (
 func main() {
 	ext := keywords.NewExtractor(
 		[]string{
+			"电话",
+
 			"项目编号",
 			"招标项目编号",
 			"采购项目编号",
@@ -39,7 +41,6 @@ func main() {
 			"场次号",
 			"投资项目代码",
 			"日期",
-			"电话",
 			"机构",
 		},
 		keywords.WithFilter(
@@ -52,6 +53,7 @@ func main() {
 	if err == nil {
 		log.Println(ext.GetContent())
 		log.Println(ext.GetResult(true))
+		log.Println(ext.GetItemsByWeight())
 	}
 
 }
