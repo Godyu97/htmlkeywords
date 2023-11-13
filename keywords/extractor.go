@@ -56,7 +56,18 @@ var DefaultFilter = func(item string) string {
 	if strings.ContainsRune(item, ZhColon) {
 		return ""
 	}
-	return strings.Split(item, string(Sep4))[0]
+	//
+	idx := strings.IndexFunc(item, func(r rune) bool {
+		// 此处决定切割关键信息条件
+		if r == Sep1 || r == Sep2 || r == Sep3 || r == Sep4 {
+			return true
+		}
+		return false
+	})
+	if idx > 0 {
+		item = item[:idx]
+	}
+	return item
 }
 
 func WithFilter(fn func(string) string) ExtractorOptionFunc {

@@ -75,7 +75,7 @@ func extractKey(content, key string) []string {
 			s = s[idxText:]
 			idx := strings.IndexFunc(s, func(r rune) bool {
 				// 此处决定切割关键信息条件
-				if r == Enter || r == Sep1 || r == Sep2 || r == Sep3 {
+				if r == Enter {
 					return true
 				}
 				return false
