@@ -84,7 +84,7 @@ func (e *extract) GetResult(filter bool) map[string][]string {
 			for _, s := range v {
 				r := e.filterFn(s)
 				if r != "" {
-					frv = append(frv, s)
+					frv = append(frv, r)
 				}
 			}
 			if len(frv) > 0 {
