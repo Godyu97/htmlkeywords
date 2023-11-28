@@ -12,7 +12,16 @@ func ParseHtml(r io.Reader) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return formatHTML(n), nil
+	content := formatHTML(n)
+	//将content的nbsp替换为空格 使用strings.Map
+	content = strings.Map(func(r rune) rune {
+		if r == NBSP || r == EMSP || r == ENSP {
+			return Space
+		} else {
+			return r
+		}
+	}, content)
+	return content, nil
 }
 
 var ArrBlock = []string{
