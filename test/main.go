@@ -629,7 +629,7 @@ func main() {
 	if err == nil {
 		log.Println(ext.GetContent())
 		log.Println(ext.GetResult(true))
-		log.Println(ext.GetItemsByWeight())
+		log.Println(ext.GetItemsByWeight(true))
 	}
 
 }

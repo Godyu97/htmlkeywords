@@ -88,7 +88,9 @@ func extractKey(content, key string) []string {
 			s = vege.RemoveInvalidParentheses(s, [2]rune{'（', '）'})
 			//去除末端空格
 			s = strings.TrimSpace(s)
-			result = append(result, s)
+			if s != "" {
+				result = append(result, s)
+			}
 			return append(result, extractKey(after, key)...)
 		}
 	}

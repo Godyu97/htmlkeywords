@@ -3,18 +3,20 @@ package keywords
 import (
 	"strings"
 	"unicode/utf8"
+	"github.com/Godyu97/vege9/vege"
 )
 
 // 单个实例 线程不安全
 type Extractor interface {
+	//计算方法
 	ExtractKeywordsFromHtml(html string) error
-	GetResult(filter bool) map[string][]string
+	Clear()
+	//无副作用方法
+	GetResult(filter bool) []ResultRow
 	GetContent() string
 	GetSubject() string
-	Clear()
-
-	Filter(item string) string                      //return filter 后的值
-	GetItemsByWeight() (key string, items []string) //按关键字列表序列获取第一个非空结果集
+	Filter(item string) string               //return filter 后的值
+	GetItemsByWeight(filter bool) *ResultRow //按关键字列表序列获取第一个非空结果集
 }
 
 type extract struct {
@@ -22,8 +24,13 @@ type extract struct {
 	arrKeys  []string                 //关键字列表,有序为权重
 	filterFn func(item string) string //GetResult时额外的过滤逻辑
 
-	content string              //解构后的文本
-	result  map[string][]string //提取结果
+	content string      //解构后的文本
+	result  []ResultRow //提取结果
+}
+
+type ResultRow struct {
+	Key string
+	Val []string
 }
 
 var _ Extractor = (*extract)(nil)
@@ -33,8 +40,8 @@ type ExtractorOptionFunc func(o *extract)
 // arrKeys init
 func NewExtractor(keys []string, ops ...ExtractorOptionFunc) Extractor {
 	obj := new(extract)
-	obj.arrKeys = keys
-	obj.result = make(map[string][]string)
+	obj.arrKeys = vege.SliceUnique(keys)
+	obj.result = make([]ResultRow, 0)
 	for _, op := range ops {
 		op(obj)
 	}
@@ -76,19 +83,22 @@ func WithFilter(fn func(string) string) ExtractorOptionFunc {
 	}
 }
 
-func (e *extract) GetResult(filter bool) map[string][]string {
+func (e *extract) GetResult(filter bool) []ResultRow {
 	if filter && e.filterFn != nil {
-		fr := make(map[string][]string)
-		for k, v := range e.result {
+		fr := make([]ResultRow, 0)
+		for _, row := range e.result {
 			frv := make([]string, 0)
-			for _, s := range v {
+			for _, s := range row.Val {
 				r := e.filterFn(s)
 				if r != "" {
 					frv = append(frv, r)
 				}
 			}
 			if len(frv) > 0 {
-				fr[k] = frv
+				fr = append(fr, ResultRow{
+					Key: row.Key,
+					Val: frv,
+				})
 			}
 		}
 		return fr
@@ -116,7 +126,7 @@ func (e *extract) GetSubject() string {
 
 func (e *extract) Clear() {
 	e.content = ""
-	e.result = make(map[string][]string)
+	e.result = make([]ResultRow, 0)
 }
 
 // 提取关键字
@@ -130,20 +140,20 @@ func (e *extract) ExtractKeywordsFromHtml(html string) error {
 		// 返回全部匹配结果
 		value := extractKey(content, key)
 		if len(value) > 0 {
-			e.result[key] = value
+			e.result = append(e.result, ResultRow{
+				Key: key,
+				Val: value,
+			})
 		}
 	}
 	return nil
 }
 
-func (e *extract) GetItemsByWeight() (key string, items []string) {
-	result := e.GetResult(true)
-	for _, key := range e.arrKeys {
-		items, ok := result[key]
-		if ok == false {
-			continue
+func (e *extract) GetItemsByWeight(filter bool) *ResultRow {
+	for _, row := range e.GetResult(filter) {
+		if len(row.Val) > 0 {
+			return &row
 		}
-		return key, items
 	}
-	return "", nil
+	return nil
 }
