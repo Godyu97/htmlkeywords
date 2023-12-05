@@ -4,7 +4,6 @@ import (
 	"github.com/Godyu97/vege9/vege"
 	"regexp"
 	"strings"
-	"unicode/utf8"
 )
 
 const (
@@ -26,12 +25,17 @@ const (
 // 关键字之间处理空格的正则段 32 or 160
 const KeyP = `(\s|\xa0)*`
 
-func regKey(content string, key string) (after string, found bool) {
+func regKey(content string, key []rune) (after string, found bool) {
 	pattern := ""
-	for i, r := range key {
-		pattern += string(r)
-		if i < utf8.RuneCountInString(key)-1 {
-			pattern += KeyP
+	for i := 0; i < len(key); i++ {
+		//	处理小括号
+		if key[i] == '(' || key[i] == ')' {
+			pattern += `\`
+		}
+		if i < len(key)-1 {
+			pattern += string(key[i]) + KeyP
+		} else {
+			pattern += string(key[i])
 		}
 	}
 	re, err := regexp.Compile(pattern)
@@ -48,7 +52,7 @@ func regKey(content string, key string) (after string, found bool) {
 func extractKey(content, key string) []string {
 	result := make([]string, 0)
 	//  实现字符串匹配截取关键内容 关键字可能有空格 正则取index
-	after, found := regKey(content, key)
+	after, found := regKey(content, []rune(key))
 	//contain key
 	if found == true {
 		text := []rune(after)
